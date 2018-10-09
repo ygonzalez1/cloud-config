@@ -1,0 +1,212 @@
+
+---
+aleph:
+  port:
+    oauth: 18080
+    finance: 18090
+    media: 18100
+    rights: 18110
+    adsales: 18120
+    adsales-freetv: 18121
+    contentdelivery: 18130
+    depreciation: 18140
+    entities: 18150
+    prebilling: 18160
+    programming: 18170
+    title: 18180
+    config: 18190
+    branding: 18200
+    log: 18220
+    support: 18230
+    placer: 18240
+    eip-mam: 18250
+    eip-emea: 18251
+    eip-internal: 18252
+    eip-external: 18253
+    clearproxy: 8080
+    orders: 18260
+    vod: 18270
+    report: 18280
+    officeService: 18300
+
+
+    commondb: 1521
+
+  frontport:
+    oauth: 18082
+    finance: 18092
+    media: 18102
+    rights: 18112
+    adsales: 18122
+    adsales-freetv: 18123
+    contentdelivery: 18132
+    depreciation: 18142
+    entities: 18152
+    prebilling: 18162
+    programming: 18172
+    title: 18182
+    branding: 18202
+    log: 18222
+    support: 18232
+    placer: 18242
+    orders: 18262
+    vod: 18272
+    report: 18282
+
+  db:
+    host: db.turner.dev.redb.ee
+    sid: ALEPHDBD1
+
+  oauth:
+    context-path: /aleph-oauth
+    uri: http://localhost:${aleph.port.oauth}${aleph.oauth.context-path}
+    redis:
+      enabled: false
+      host: localhost
+      port: 6379
+
+  title:
+    context-path: /title
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.title}${aleph.title.context-path}
+
+  support:
+    context-path: /support
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.support}${aleph.support.context-path}
+
+  programming:
+    context-path: /programming
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.programming}${aleph.programming.context-path}
+
+  media:
+    context-path: /media
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.media}${aleph.media.context-path}
+
+  log:
+    context-path: /log
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.log}${aleph.log.context-path}
+
+  rights:
+    context-path: /rights
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.rights}${aleph.rights.context-path}
+
+  clearproxy:
+     base: http://argalephdockerd1:${aleph.port.clearproxy}
+     context-path: /PFT.Clear.TurnerTracker
+     api-path-tvc: /TurnerLatam.svc/json
+     api-path-longform: Longform/longformService/staging/v1
+     api-path-vod: ${aleph.clearproxy.base}/PFT.Clear.API/workorder
+     uri: ${aleph.clearproxy.base}${aleph.clearproxy.context-path}
+     
+  adsales:
+    context-path: /adsales
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.adsales}${aleph.adsales.context-path}
+
+  adsales-freetv:
+    context-path: /adsales
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.adsales-freetv}${aleph.adsales-freetv.context-path}
+
+  placer:
+    context-path: /placer
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.placer}${aleph.placer.context-path}
+    
+  vod:
+    context-path: /vod
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.vod}${aleph.vod.context-path}
+
+  orders:
+    context-path: /orders
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.orders}${aleph.orders.context-path}
+    
+  prebilling:
+    context-path: /prebilling
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.prebilling}${aleph.prebilling.context-path}
+
+  officeMail:
+    uri: http://argalephdockerd1:${aleph.port.officeService}
+
+  predictive:
+    programming:
+      uri: http://argalephdockerdpp:19300/
+
+---
+feign:
+   hystrix:
+     enabled: true
+ribbon:
+  ConnectTimeout: 30000
+  ReadTimeout: 300000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          semaphore:
+             maxConcurrentRequests: 200
+        timeout:
+            enabled: false
+---
+ldap:
+  url: ldap://argtbsdc01.turner.com:389
+  mocked: true
+  host: turner.com
+
+---
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@${aleph.db.host}:${aleph.port.commondb}/${aleph.db.sid}
+    username: proxy_mig
+    password: proxy_mig
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    pool-name: SpringBootHikariCP
+    type: com.zaxxer.hikari.HikariDataSource 
+    pool-prepared-statements: true
+    max-open-prepared-statements: 500
+    leakDetectionThreshold: 2500
+    maximumPoolSize: 30
+    minimumIdle: 5
+
+  jpa:
+    hibernate.ddl-auto: none
+    show-sql: false
+    database-platform: org.hibernate.dialect.Oracle9Dialect
+
+  oauth2:
+    resource:
+      userInfoUri: ${aleph.oauth.uri}/user
+  auth:
+    serverurl: ${aleph.oauth.uri}/oauth/check_token
+
+security:
+  oauth2:
+     resource:
+       user-info-uri: ${aleph.oauth.uri}/user
+       token-info-uri: ${aleph.oauth.uri}/oauth/check_token
+
+
+
+---
+management:
+  security:
+    enabled: false
+  context-path: /manage
+
+
+archiving:
+  datasource:
+    url: jdbc:sqlserver://argsppdb01.turner.com:1433;databaseName=DB_BIMBA;
+    username: emea_integration
+    password: k4U89wmrEfbeP5A5P4YE
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
