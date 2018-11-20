@@ -129,7 +129,7 @@ aleph:
   orders:
     context-path: /orders
     api-path: /api/v1
-    uri: http://10.161.237.174:${aleph.port.orders}${aleph.orders.context-path}    
+    uri: http://argalephdockerd1:${aleph.port.orders}${aleph.orders.context-path}    
     
   vod:
     context-path: /vod
