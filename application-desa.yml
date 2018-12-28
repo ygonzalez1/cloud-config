@@ -114,7 +114,7 @@ aleph:
   adsales:
     context-path: /adsales
     api-path: /api/v1
-    uri: http://argalephdockerd1:${aleph.port.adsales}${aleph.adsales.context-path}
+    uri: http://10.161.237.174:${aleph.port.adsales}${aleph.adsales.context-path}
 
   adsales-freetv:
     context-path: /adsales
