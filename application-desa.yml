@@ -147,7 +147,7 @@ aleph:
   report:
     context-path: /report
     api-path: /api/v1
-    uri: http://10.161.237.174:${aleph.port.report}${aleph.report.context-path}
+    uri: http://argalephdockerd1:${aleph.port.report}${aleph.report.context-path}
 
   predictive:
     programming:
