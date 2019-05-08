@@ -65,6 +65,11 @@ aleph:
       host: localhost
       port: 6379
 
+  eip-external:
+    context-path: /eip/external
+    api-path: /api/v1
+    uri: http://argalephdockerd1:${aleph.port.eip-external}${aleph.eip-external.context-path}
+    
   title:
     context-path: /title
     api-path: /api/v1
